@@ -13,4 +13,4 @@ services:
     volumes:
       - ./index.js:/app/index.js
       - ./src:/app/src
-
+      - ./openapi.yml:/app/openapi.yml
