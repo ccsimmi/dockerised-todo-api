@@ -1,19 +1,183 @@
 openapi: 3.0.0
 info:
-  title: Simple API
+  title: Simple To-do Task API
   version: 1.0.0
+tags:
+  - name: Todos
+    description: Manage your todos
 paths:
-  /hello:
+  /todo:
     get:
-      summary: Returns a greeting message
+      summary: Returns a list of tasks
+      tags:
+        - "Todos"
       responses:
         '200':
-          description: A successful response
+          description: Successfully returned a list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    task:
+                      type: string
+                      example: "Buy milk"
+                      description: The name of the task
+                      required: true
+                    completed:
+                      type: boolean
+                      example: false
+                      description: Whether the task is completed
+                      required: true
+        '404':
+          description: No tasks found
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
+                  error:
                     type: string
-                    example: "Hello, world!"
+                    example: "No tasks found"
+                    description: The error message
+                    required: true
+
+    post:
+      summary: Creates a new task
+      tags:
+        - "Todos"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: string
+                  example: "Buy milk"
+                  description: The name of the task
+                  required: true
+                completed:
+                  type: boolean
+                  example: false
+                  description: Whether the task is completed
+                  required: true
+      responses:
+        '201':
+          description: Successfully created a new task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  task:
+                    type: string
+                    example: "Buy milk"
+                    description: The name of the task
+                    required: true
+                  completed:
+                    type: boolean
+                    example: false
+                    description: Whether the task is completed
+                    required: true
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Must supply a task name"
+                    description: The error message
+                    required: true
+
+  /todo/{taskId}:
+    get:
+      summary: Returns a single task by Id
+      tags:
+        - "Todos"
+      parameters:
+        - name: taskId
+          in: path
+          description: The Id of the task
+          required: true
+          schema:
+            type: integer
+            example: 1
+            description: The Id of the task
+            required: true
+            minimum: 1
+      responses:
+        '200':
+          description: Successfully returned a single task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  task:
+                    type: string
+                    example: "Buy milk"
+                    description: The name of the task
+                    required: true
+                  completed:
+                    type: boolean
+                    example: false
+                    description: Whether the task is completed
+                    required: true
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Task not found"
+                    description: The error message
+                    required: true
+
+    delete:
+      summary: Deletes a single task by Id
+      tags:
+        - "Todos"
+      parameters:
+        - name: taskId
+          in: path
+          description: The Id of the task
+          required: true
+          schema:
+            type: integer
+            example: 1
+            description: The Id of the task
+            required: true
+            minimum: 1
+      responses:
+        '204':
+          description: Successfully deleted a single task
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Task not found"
+                    description: The error message
+                    required: true
