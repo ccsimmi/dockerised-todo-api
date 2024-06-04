@@ -5,6 +5,46 @@ info:
 tags:
   - name: Todos
     description: Manage your todos
+components:
+  schemas:
+    task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The Id of the task
+          required: true
+        task:
+          type: string
+          example: "Buy milk"
+          description: The name of the task
+          required: true
+        completed:
+          type: boolean
+          example: false
+          description: Whether the task is completed
+          required: true
+    error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Task not found"
+          description: The error message
+          required: true
+  parameters:
+    taskId:
+      name: taskId
+      in: path
+      description: The Id of the task
+      required: true
+      schema:
+        type: integer
+        example: 1
+        description: The Id of the task
+        required: true
+        minimum: 1
 paths:
   /todo:
     get:
@@ -19,33 +59,13 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      example: 1
-                    task:
-                      type: string
-                      example: "Buy milk"
-                      description: The name of the task
-                      required: true
-                    completed:
-                      type: boolean
-                      example: false
-                      description: Whether the task is completed
-                      required: true
+                  $ref: "#/components/schemas/task"
         '404':
           description: No tasks found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "No tasks found"
-                    description: The error message
-                    required: true
+                $ref: "#/components/schemas/error"
 
     post:
       summary: Creates a new task
@@ -73,33 +93,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  task:
-                    type: string
-                    example: "Buy milk"
-                    description: The name of the task
-                    required: true
-                  completed:
-                    type: boolean
-                    example: false
-                    description: Whether the task is completed
-                    required: true
+                $ref: "#/components/schemas/task"
         '422':
           description: Validation error
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Must supply a task name"
-                    description: The error message
-                    required: true
+                $ref: "#/components/schemas/error"
 
   /todo/{taskId}:
     get:
@@ -107,65 +107,27 @@ paths:
       tags:
         - "Todos"
       parameters:
-        - name: taskId
-          in: path
-          description: The Id of the task
-          required: true
-          schema:
-            type: integer
-            example: 1
-            description: The Id of the task
-            required: true
-            minimum: 1
+        - $ref: "#/components/parameters/taskId"
       responses:
         '200':
           description: Successfully returned a single task
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  task:
-                    type: string
-                    example: "Buy milk"
-                    description: The name of the task
-                    required: true
-                  completed:
-                    type: boolean
-                    example: false
-                    description: Whether the task is completed
-                    required: true
+                $ref: "#/components/schemas/task"
         '404':
           description: Task not found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Task not found"
-                    description: The error message
-                    required: true
+                $ref: "#/components/schemas/error"
 
     delete:
       summary: Deletes a single task by Id
       tags:
         - "Todos"
       parameters:
-        - name: taskId
-          in: path
-          description: The Id of the task
-          required: true
-          schema:
-            type: integer
-            example: 1
-            description: The Id of the task
-            required: true
-            minimum: 1
+        - $ref: "#/components/parameters/taskId"
       responses:
         '204':
           description: Successfully deleted a single task
@@ -174,10 +136,4 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Task not found"
-                    description: The error message
-                    required: true
+                $ref: "#/components/schemas/error"
