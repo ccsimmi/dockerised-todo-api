@@ -14,3 +14,23 @@ services:
       - ./index.js:/app/index.js
       - ./src:/app/src
       - ./openapi.yml:/app/openapi.yml
+
+  database:
+    container_name: database
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  pgdata:
