@@ -5,6 +5,14 @@ async function getTodos() {
 	return result.rows;
 }
 
+async function createTodo(task, completed) {
+	const result = await pool.query(
+		"INSERT INTO todos(task, completed) VALUES($1, $2) RETURNING *",
+		[task, completed],
+	);
+	return result.rows;
+}
+
 async function getOneTodo(id) {
 	const result = await pool.query("SELECT * FROM todos WHERE id = $1", [id]);
 	return result.rows;
@@ -20,6 +28,7 @@ async function deleteTodo(id) {
 
 module.exports = {
 	getTodos,
+	createTodo,
 	getOneTodo,
-    deleteTodo,
+	deleteTodo,
 };
